@@ -1,0 +1,19 @@
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'work/style.css' %}">
+<div class='container'>
+    <h1 class='company'>{{ company.name }}</h1>
+    <ul>
+    {% for manager in company.manager_set.all %}
+        {% for work in manager.work_set.all %}
+            <div class='work'>
+                <li>{{ work.name }}</li>
+                <ul class='position'>
+                {% for position in work.position_set.all %}
+                    <li>{{ position.name }} — {{ position.worker.first_name }} {{ position.worker.last_name }}</li>
+                {% endfor %}
+                </ul>
+            </div>
+        {% endfor %}
+    {% endfor %}
+    </ul>
+</div>

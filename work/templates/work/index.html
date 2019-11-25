@@ -1,0 +1,14 @@
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'work/style.css' %}">
+
+<div class='container'>
+    {% if companies %}
+        <ul>
+        {% for company in companies %}
+            <li class='company'><a href="{% url 'detail' company.id %}">{{ company.name }}</a></li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>No companies.</p>
+    {% endif %}
+</div>

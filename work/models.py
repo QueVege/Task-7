@@ -30,9 +30,10 @@ class Work(models.Model):
 
 class Position(models.Model):
     work = models.ForeignKey(Work,on_delete=models.CASCADE)
+    name = models.CharField(max_length=50)
 
     def __str__(self):
-        return f'position {self.work.name}'
+        return f'position {self.name}'
 
 
 class Worker(models.Model):
