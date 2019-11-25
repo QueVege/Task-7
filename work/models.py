@@ -37,7 +37,7 @@ class Position(models.Model):
 
 
 class Worker(models.Model):
-    position = models.OneToOneField(Position, on_delete=models.CASCADE, primary_key=True)
+    position = models.OneToOneField(Position, on_delete=models.CASCADE)
     first_name = models.CharField(max_length=20)
     last_name = models.CharField(max_length=20)
 
