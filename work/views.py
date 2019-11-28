@@ -5,11 +5,9 @@ from django.views import generic
 
 
 class IndexView(generic.ListView):
+    model = Company
     template_name = 'work/index.html'
     context_object_name = 'companies'
-
-    def get_queryset(self):
-        return Company.objects.all()
 
 
 class DetailView(generic.DetailView):
