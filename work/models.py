@@ -27,6 +27,7 @@ class Work(models.Model):
     def __str__(self):
         return f'work {self.name}'
 
+    
 class Worker(models.Model):
     first_name = models.CharField(max_length=20)
     last_name = models.CharField(max_length=20)
@@ -34,6 +35,7 @@ class Worker(models.Model):
     def __str__(self):
         return f'worker {self.first_name} {self.last_name}'
 
+    
 class Position(models.Model):
     work = models.ForeignKey(Work,on_delete=models.CASCADE)
     name = models.CharField(max_length=50)
