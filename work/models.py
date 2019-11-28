@@ -37,7 +37,7 @@ class Worker(models.Model):
 
     
 class Position(models.Model):
-    work = models.ForeignKey(Work,on_delete=models.CASCADE)
+    work = models.ForeignKey(Work, on_delete=models.CASCADE)
     name = models.CharField(max_length=50)
     worker = models.OneToOneField(Worker, on_delete=models.CASCADE)
 
