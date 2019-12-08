@@ -1,0 +1,15 @@
+{% extends 'work/base.html' %}
+
+{% block content %}
+    {% if workers %}
+        <ul>
+        {% for worker in workers %}
+            <div class='work'>
+                <li><a href="{% url 'work:worker_detail' worker.id %}">{{ worker.first_name }} {{ worker.last_name }}</a></li>
+            </div>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>No workers.</p>
+    {% endif %}
+{% endblock %}

@@ -11,7 +11,8 @@ class Company(models.Model):
 
 
 class Manager(models.Model):
-    company = models.ForeignKey(Company, on_delete=models.CASCADE)
+    company = models.ForeignKey(
+        Company, related_name='managers', on_delete=models.CASCADE)
     first_name = models.CharField(max_length=20)
     last_name = models.CharField(max_length=20)
 
@@ -20,7 +21,8 @@ class Manager(models.Model):
 
 
 class Work(models.Model):
-    initiator = models.ForeignKey(Manager, on_delete=models.CASCADE)
+    initiator = models.ForeignKey(
+        Manager, related_name='works', on_delete=models.CASCADE)
     name = models.CharField(max_length=50)
     created_date = models.DateTimeField(default=timezone.now)
 
@@ -34,10 +36,48 @@ class Worker(models.Model):
     def __str__(self):
         return f'worker {self.first_name} {self.last_name}'
 
-class Position(models.Model):
-    work = models.ForeignKey(Work,on_delete=models.CASCADE)
+class WorkPlace(models.Model):
+    work = models.ForeignKey(
+        Work, related_name='workplaces', on_delete=models.CASCADE)
     name = models.CharField(max_length=50)
-    worker = models.OneToOneField(Worker, on_delete=models.CASCADE)
+    worker = models.ForeignKey(
+        Worker, related_name='workplaces', on_delete=models.CASCADE)
+
+    NEW = 0
+    APPROVED = 1
+    CANCELLED = 2
+    FINISHED = 3
+
+    STATUS_CHOICES = (
+        (NEW, 'New'),
+        (APPROVED, 'Approved'),
+        (CANCELLED, 'Cancelled'),
+        (FINISHED, 'Finished'),
+    )
+
+    status = models.IntegerField(choices=STATUS_CHOICES, default=NEW)
 
     def __str__(self):
-        return f'position {self.name}'
+        return f'workplace {self.name}'
+
+class WorkTime(models.Model):
+    NEW = 0
+    APPROVED = 1
+    CANCELLED = 2
+
+    date_start = models.DateTimeField()
+    date_end = models.DateTimeField()
+    
+    worker = models.ForeignKey(
+        Worker, related_name='worktimes', on_delete=models.CASCADE)
+    workplace = models.ForeignKey(
+        WorkPlace, on_delete=models.CASCADE)
+
+
+    STATUS_CHOICES = (
+        (NEW, 'New'),
+        (APPROVED, 'Approved'),
+        (CANCELLED, 'Cancelled'),
+    )
+    status = models.IntegerField(choices=STATUS_CHOICES, default=NEW)
+

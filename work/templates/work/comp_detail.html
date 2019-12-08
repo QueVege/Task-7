@@ -1,0 +1,20 @@
+{% extends 'work/base.html' %}
+
+{% block content %}
+    <h1 class='company'>{{ company.name }}</h1>
+    <ul>
+
+    {% for work in works %}
+        <div class='work'>
+            <li>{{ work.name }}
+                <ul class='position'>
+                {% for wp in work.workplaces.all %}
+                    <li>{{ wp.name }} — {{ wp.worker.first_name }} {{ position.worker.last_name }}</li>
+                {% endfor %}
+                </ul>
+            </li>
+        </div>
+    {% endfor %}
+
+    </ul>
+{% endblock %}

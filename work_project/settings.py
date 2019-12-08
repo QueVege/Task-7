@@ -11,6 +11,14 @@ https://docs.djangoproject.com/en/2.2/ref/settings/
 """
 
 import os
+import sentry_sdk
+from sentry_sdk.integrations.django import DjangoIntegration
+
+
+sentry_sdk.init(
+    dsn="https://51756b69b2844fcb8aabb2e007559eb3@sentry.io/1849234",
+    integrations=[DjangoIntegration()]
+)
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -119,3 +127,31 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 
 STATIC_URL = '/static/'
+
+LOGGING = {
+   'version': 1,
+   'disable_existing_loggers': False,
+   'handlers': {
+       'file': {
+           'level': 'INFO',
+           'class': 'logging.FileHandler',
+           'filename': os.path.join(BASE_DIR, 'logfile.log'),
+       },
+        'sentry': {
+            'level': 'INFO',
+            'class': 'sentry_sdk.integrations.logging.BreadcrumbHandler',
+        }
+   },
+   'loggers': {
+       'django': {
+           'handlers': ['file', 'sentry'],
+           'level': 'INFO',
+           'propagate': True,
+       },
+   },
+}
+ 
+
+ 
+
+
