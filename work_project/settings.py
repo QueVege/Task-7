@@ -143,10 +143,10 @@ LOGGING = {
         }
    },
    'loggers': {
-       'django': {
+       'my_log': {
            'handlers': ['file', 'sentry'],
            'level': 'INFO',
-           'propagate': True,
+           'propagate': False,
        },
    },
 }

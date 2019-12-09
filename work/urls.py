@@ -29,10 +29,10 @@ urlpatterns = [
         views.WorkerDetail.as_view(),
         name='worker_detail'
     ),
-    path(
-        'new_work',
-    ),
-    path(
-        'hire',
-    ),
+    # path(
+    #     'new_work',
+    # ),
+    # path(
+    #     'hire',
+    # ),
 ]

@@ -69,9 +69,9 @@ class WorkTime(models.Model):
     date_end = models.DateTimeField()
     
     worker = models.ForeignKey(
-        Worker, related_name='worktimes', on_delete=models.CASCADE)
+        Worker, on_delete=models.CASCADE)
     workplace = models.ForeignKey(
-        WorkPlace, on_delete=models.CASCADE)
+        WorkPlace, related_name='worktimes', on_delete=models.CASCADE)
 
 
     STATUS_CHOICES = (

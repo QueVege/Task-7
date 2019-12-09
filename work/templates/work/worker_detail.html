@@ -8,11 +8,16 @@
             <li>{{ wp.name }}
                 <ul>
                 {% for wt in wp.worktimes.all %}
-                    <li>{{ wt.date_start }} -- {{ wt.date_end }}</li>
+                    <li class='position'>From {{ wt.date_start|date:"d/m/Y H:i" }} to {{ wt.date_end|date:"d/m/Y H:i" }}</li>
                 {% endfor %}
                 </ul>
             </li>
         </div>
     {% endfor %}
     </ul>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Set" />
+    </form>
 {% endblock %}
