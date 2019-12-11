@@ -21,13 +21,16 @@ class Manager(models.Model):
 
 
 class Work(models.Model):
-    initiator = models.ForeignKey(
-        Manager, related_name='works', on_delete=models.CASCADE)
+    company = models.ForeignKey(
+        Company, related_name='works', on_delete=models.CASCADE)
     name = models.CharField(max_length=50)
     created_date = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
-        return f'work {self.name}'
+        return f'work {self.name} at {self.company.name} company'
+
+    class Meta:
+        unique_together = ['company', 'name']
 
     
 class Worker(models.Model):
@@ -40,7 +43,7 @@ class Worker(models.Model):
 class WorkPlace(models.Model):
     work = models.ForeignKey(
         Work, related_name='workplaces', on_delete=models.CASCADE)
-    name = models.CharField(max_length=50)
+
     worker = models.ForeignKey(
         Worker, related_name='workplaces', on_delete=models.CASCADE)
 
@@ -59,7 +62,10 @@ class WorkPlace(models.Model):
     status = models.IntegerField(choices=STATUS_CHOICES, default=NEW)
 
     def __str__(self):
-        return f'workplace {self.name}'
+        return f'workplace {self.work.name} at {self.work.company.name} company'
+
+    class Meta:
+        unique_together = ['work', 'worker']
 
 class WorkTime(models.Model):
     NEW = 0

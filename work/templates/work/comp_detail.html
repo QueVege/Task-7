@@ -2,19 +2,20 @@
 
 {% block content %}
     <h1 class='company'>{{ company.name }}</h1>
+    <p><a href="{% url 'work:manag_list' company.id %}">Managers</a></p>
     <ul>
-
     {% for work in works %}
         <div class='work'>
             <li>{{ work.name }}
                 <ul class='position'>
                 {% for wp in work.workplaces.all %}
-                    <li>{{ wp.name }} — {{ wp.worker.first_name }} {{ position.worker.last_name }}</li>
+                    {% if not wp.status %}
+                        <li>{{ wp.worker.first_name }} {{ wp.worker.last_name }}</li>
+                    {% endif %}
                 {% endfor %}
                 </ul>
             </li>
         </div>
     {% endfor %}
-
     </ul>
 {% endblock %}

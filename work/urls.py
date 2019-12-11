@@ -5,7 +5,7 @@ app_name = 'work'
 
 urlpatterns = [
     path(
-        '',
+        'companies/',
         views.CompList.as_view(),
         name='comp_list'
     ),
@@ -29,10 +29,14 @@ urlpatterns = [
         views.WorkerDetail.as_view(),
         name='worker_detail'
     ),
-    # path(
-    #     'new_work',
-    # ),
-    # path(
-    #     'hire',
-    # ),
+    path(
+        'create_work/',
+          views.CreateWork.as_view(),
+          name='create_work'
+    ),
+    path(
+        'hire',
+        views.Hire.as_view(),
+        name='hire'
+    ),
 ]

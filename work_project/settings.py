@@ -137,21 +137,12 @@ LOGGING = {
            'class': 'logging.FileHandler',
            'filename': os.path.join(BASE_DIR, 'logfile.log'),
        },
-        'sentry': {
-            'level': 'INFO',
-            'class': 'sentry_sdk.integrations.logging.BreadcrumbHandler',
-        }
    },
    'loggers': {
        'my_log': {
-           'handlers': ['file', 'sentry'],
+           'handlers': ['file'],
            'level': 'INFO',
            'propagate': False,
        },
    },
 }
- 
-
- 
-
-

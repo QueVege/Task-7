@@ -48,57 +48,78 @@ table {
 /**** Typography ****/
 
 body {
-    font: 300 16px/22px "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font: 300 16px/22px "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
 .company {
-    color: #148880;
-    font-size: 24px;
-    line-height: 44px;
+  color: #148880;
+  font-size: 20px;
+  line-height: 44px;
 }
 
 a {
-    text-decoration: none;
-    color: #148880;
+  text-decoration: none;
+  color: #148880;
 }
 
-.work {
-    color: #666;
+.work,form {
+  color: #666;
 }
 
 .position {
-    color: #888;
-    font-size: 14px;
+  color: #888;
+  font-size: 14px;
+}
+
+.menu {
+  font-size: 24px;
+  text-transform: uppercase;
 }
 
 
 /**** Background ****/
 
 body {
-    background-color: #d3d3d3;
+  background-color: #d3d3d3;
 }
 
 .container {
-    background: #fff;
+  background: #fff;
 }
+
 
 /**** Positioning ****/
 
 .container {
-    box-sizing: border-box;
-    margin-left: auto;
-    margin-right: auto;
-    width: 60%;
-    height: 100%;
-    text-align: justify;
-    padding: 50px 100px;
+  box-sizing: border-box;
+  margin-left: auto;
+  margin-right: auto;
+  width: 60%;
+  height: 100%;
+  text-align: justify;
+  padding: 50px 100px;
 }
 
 .work {
-    margin-top: 20px;
+  margin-top: 20px;
 }
 
 .position {
-    margin-left: 20px;
-    margin-top: 10px;
+  margin-left: 20px;
+  margin-top: 10px;
+}
+
+.menu {
+  text-align: right;
+  margin-bottom: 45px;
+  word-spacing: 7px;
+}
+
+form {
+  box-sizing: border-box;
+  padding: 20px;
+  margin: 32px;
+  border: solid 1px #bbb;
+  border-radius: 10px;
+  line-height: 32px;
 }

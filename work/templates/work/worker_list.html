@@ -5,7 +5,14 @@
         <ul>
         {% for worker in workers %}
             <div class='work'>
-                <li><a href="{% url 'work:worker_detail' worker.id %}">{{ worker.first_name }} {{ worker.last_name }}</a></li>
+                <li>
+                    <a href="{% url 'work:worker_detail' worker.id %}">{{ worker.first_name }} {{ worker.last_name }}</a>
+                    {% if worker.workplaces.last %}
+                        <p class = 'position'>{{ worker.workplaces.last.work.name }} at {{ worker.workplaces.last.work.company.name }}</p>
+                    {% else %}
+                    <p class = 'position'>Not working now.</p>
+                    {% endif %}
+                </li>
             </div>
         {% endfor %}
         </ul>

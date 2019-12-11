@@ -2,22 +2,26 @@
 
 {% block content %}
     <h1 class='company'>{{ worker.first_name }} {{ worker.last_name }}</h1>
-    <ul>
-    {% for wp in workplaces %}
-        <div class='work'>
-            <li>{{ wp.name }}
-                <ul>
-                {% for wt in wp.worktimes.all %}
-                    <li class='position'>From {{ wt.date_start|date:"d/m/Y H:i" }} to {{ wt.date_end|date:"d/m/Y H:i" }}</li>
-                {% endfor %}
-                </ul>
-            </li>
-        </div>
-    {% endfor %}
-    </ul>
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <input type="submit" value="Set" />
-    </form>
+    {% if workplaces %}
+        <ul>
+        {% for wp in workplaces %}
+            <div class='work'>
+                <li>{{ wp.work.name }} at {{ wp.work.company.name }}
+                    <ul>
+                    {% for wt in wp.worktimes.all %}
+                        <li class='position'>From {{ wt.date_start|date:"d.m.Y H:i" }} To {{ wt.date_end|date:"d.m.Y H:i" }}</li>
+                    {% endfor %}
+                    </ul>
+                </li>
+            </div>
+        {% endfor %}
+        </ul>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <input type="submit" value="Add" />
+        </form>
+    {% else %}
+        <p class='work'>Not working now.</p>
+    {% endif %}
 {% endblock %}
