@@ -6,7 +6,14 @@
         <ul>
         {% for wp in workplaces %}
             <div class='work'>
-                <li>{{ wp.work.name }} at {{ wp.work.company.name }}
+                <li>{{ wp.work.name }} at {{ wp.work.company.name }} (status: {{ wp.status }})
+                    {% if not wp.status %}
+                        <form action="{% url 'work:update_wp' wp.id %}" method="post">
+                            {% csrf_token %}
+                            <input type="submit" class='status' value="Approve" name='approve_btn'/>
+                            <input type="submit" class='status' value="Cancel" name='cancel_btn'/>
+                        </form>
+                    {% endif %}
                     <ul>
                     {% for wt in wp.worktimes.all %}
                         <li class='position'>From {{ wt.date_start|date:"d.m.Y H:i" }} To {{ wt.date_end|date:"d.m.Y H:i" }}</li>
@@ -16,7 +23,7 @@
             </div>
         {% endfor %}
         </ul>
-        <form method="post">
+        <form method="post" class='adding_form'>
             {% csrf_token %}
             {{ form.as_p }}
             <input type="submit" value="Add" />

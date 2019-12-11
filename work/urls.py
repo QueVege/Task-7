@@ -39,4 +39,9 @@ urlpatterns = [
         views.Hire.as_view(),
         name='hire'
     ),
+    path(
+        'workplace/<int:pk>/',
+        views.ChangeWorkplaceStatus.as_view(),
+        name='update_wp'
+    ),
 ]

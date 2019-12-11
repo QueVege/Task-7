@@ -62,7 +62,7 @@ a {
   color: #148880;
 }
 
-.work,form {
+.work, .adding_form {
   color: #666;
 }
 
@@ -119,11 +119,25 @@ html, body {
   word-spacing: 7px;
 }
 
-form {
+.adding_form {
   box-sizing: border-box;
   padding: 20px;
   margin: 32px;
   border: solid 1px #bbb;
   border-radius: 10px;
   line-height: 32px;
+}
+
+.status {
+  border: none; 
+  padding: 5px; 
+  margin: 0; 
+  font-size: 12px;
+  font-weight: 600;
+  color:#148880; 
+  background-color: transparent; 
+}
+
+.status:hover {
+  cursor: pointer;
 }

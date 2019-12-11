@@ -1,5 +1,6 @@
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
+from django.http import HttpResponse, HttpResponseRedirect
 
 from django.shortcuts import render, redirect
 from django.urls import reverse
@@ -9,7 +10,7 @@ from .models import (
 from .forms import (
         CreateWorkTime, )
 from django.views.generic import (
-    View, ListView, DetailView, CreateView, FormView)
+    View, ListView, DetailView, CreateView, FormView, UpdateView)
 from django.views.generic.detail import SingleObjectMixin
 import logging
 
@@ -126,3 +127,31 @@ class Hire(CreateView):
 
         form.save()
         return super().form_valid(form)
+
+
+@method_decorator(login_required, name='dispatch')
+class ChangeWorkplaceStatus(UpdateView):
+    model = WorkPlace
+    fields = []
+    template_name = 'work/worker_detail.html'
+
+    def form_valid(self, form):
+        self.object = self.get_object()
+
+        if 'approve_btn' in form.data:
+            self.object.status = 1
+
+            logger.info(f'{self.object} status has changed to 1({self.object.status})')
+
+        elif 'cancel_btn' in form.data:
+            self.object.status = 2
+
+            logger.info(f'{self.object} status has changed to 2({self.object.status})')
+
+        self.object.save()
+
+        form.save()
+        return super().form_valid(form)
+
+    def get_success_url(self, **kwargs):
+        return reverse('work:worker_detail', kwargs={'pk': self.object.worker.id})
