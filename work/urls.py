@@ -31,8 +31,8 @@ urlpatterns = [
     ),
     path(
         'create_work/',
-          views.CreateWork.as_view(),
-          name='create_work'
+        views.CreateWork.as_view(),
+        name='create_work'
     ),
     path(
         'hire',
