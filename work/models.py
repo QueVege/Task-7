@@ -1,5 +1,4 @@
 from django.db import models
-from django.conf import settings
 from django.utils import timezone
 
 
@@ -32,13 +31,14 @@ class Work(models.Model):
     class Meta:
         unique_together = ['company', 'name']
 
-    
+
 class Worker(models.Model):
     first_name = models.CharField(max_length=20)
     last_name = models.CharField(max_length=20)
 
     def __str__(self):
         return f'worker {self.first_name} {self.last_name}'
+
 
 class WorkPlace(models.Model):
     work = models.ForeignKey(
@@ -62,10 +62,12 @@ class WorkPlace(models.Model):
     status = models.IntegerField(choices=STATUS_CHOICES, default=NEW)
 
     def __str__(self):
-        return f'workplace {self.work.name} at {self.work.company.name} company'
+        return (
+            f'workplace {self.work.name} at {self.work.company.name} company')
 
     class Meta:
         unique_together = ['work', 'worker']
+
 
 class WorkTime(models.Model):
     NEW = 0
@@ -74,12 +76,11 @@ class WorkTime(models.Model):
 
     date_start = models.DateTimeField()
     date_end = models.DateTimeField()
-    
+
     worker = models.ForeignKey(
         Worker, on_delete=models.CASCADE)
     workplace = models.ForeignKey(
         WorkPlace, related_name='worktimes', on_delete=models.CASCADE)
-
 
     STATUS_CHOICES = (
         (NEW, 'New'),
@@ -87,4 +88,3 @@ class WorkTime(models.Model):
         (CANCELLED, 'Cancelled'),
     )
     status = models.IntegerField(choices=STATUS_CHOICES, default=NEW)
-
