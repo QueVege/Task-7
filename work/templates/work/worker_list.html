@@ -7,11 +7,11 @@
             <div class='work'>
                 <li>
                     <a href="{% url 'work:worker_detail' worker.id %}">{{ worker.first_name }} {{ worker.last_name }}</a>
-                    {% if worker.workplaces.last %}
-                        <p class = 'position'>{{ worker.workplaces.last.work.name }} at {{ worker.workplaces.last.work.company.name }}</p>
-                    {% else %}
-                    <p class = 'position'>Not working now.</p>
-                    {% endif %}
+                    {% for wp in worker.workplaces.all %}
+                        {% if wp.status == 1 %}
+                            <p class = 'position'>{{ wp.work.name }} at {{ wp.work.company.name }}</p>
+                        {% endif %}
+                    {% endfor %}
                 </li>
             </div>
         {% endfor %}

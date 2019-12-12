@@ -10,4 +10,10 @@ class CreateWorkTime(forms.ModelForm):
 
     class Meta:
         model = WorkTime
-        fields = ('workplace', 'date_start', 'date_end')
+        fields = ('date_start', 'date_end')
+
+class ChangeStatusForm(forms.ModelForm):
+
+    class Meta:
+        model = WorkPlace
+        fields = []

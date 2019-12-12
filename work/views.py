@@ -1,6 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.http import HttpResponse, HttpResponseRedirect
+from django.shortcuts import get_object_or_404
 
 from django.shortcuts import render, redirect
 from django.urls import reverse
@@ -8,7 +9,7 @@ from django.utils import timezone
 from .models import (
     Company, Work, Worker, WorkTime, WorkPlace)
 from .forms import (
-        CreateWorkTime, )
+        CreateWorkTime, ChangeStatusForm)
 from django.views.generic import (
     View, ListView, DetailView, CreateView, FormView, UpdateView)
 from django.views.generic.detail import SingleObjectMixin
@@ -74,6 +75,7 @@ class WorkerWT(SingleObjectMixin, FormView):
             wt = form.save(commit=False)
             current_worker = Worker.objects.get(pk=kwargs['pk'])
             wt.worker = current_worker
+            wt.workplace = current_worker.workplaces.get(status=1)
             wt.save()
             return redirect('work:worker_detail', kwargs['pk'])
 
@@ -106,52 +108,37 @@ class Hire(CreateView):
     model = WorkPlace
     fields = ['work', 'worker']
     template_name = 'work/hire.html'
-    success_url = '/workers/'
-
-    def form_valid(self, form):
-        current_worker = form.cleaned_data['worker']
-
-        logger.info(
-            f'Current worker:'
-            f'{current_worker.first_name} {current_worker.last_name}')
-
-        if WorkPlace.objects.filter(worker=current_worker).exists():
-            prev_wp = WorkPlace.objects.filter(
-                worker=current_worker).latest('id')
-
-            logger.info(
-                f'Change status to Finished for: {prev_wp}')
-
-            prev_wp.status = 3
-            prev_wp.save()
-
-        form.save()
-        return super().form_valid(form)
-
-
-@method_decorator(login_required, name='dispatch')
-class ChangeWorkplaceStatus(UpdateView):
-    model = WorkPlace
-    fields = []
-    template_name = 'work/worker_detail.html'
-
-    def form_valid(self, form):
-        self.object = self.get_object()
-
-        if 'approve_btn' in form.data:
-            self.object.status = 1
-
-            logger.info(f'{self.object} status has changed to 1({self.object.status})')
-
-        elif 'cancel_btn' in form.data:
-            self.object.status = 2
-
-            logger.info(f'{self.object} status has changed to 2({self.object.status})')
-
-        self.object.save()
-
-        form.save()
-        return super().form_valid(form)
 
     def get_success_url(self, **kwargs):
         return reverse('work:worker_detail', kwargs={'pk': self.object.worker.id})
+
+
+def update_wp(request, pk):
+    wp = get_object_or_404(WorkPlace, pk=pk)
+
+    if request.method == "POST":
+        form = ChangeStatusForm(request.POST, instance=wp)
+
+        wp = form.save(commit=False)
+
+        if 'approve_btn' in form.data:
+
+            if WorkPlace.objects.filter(worker=wp.worker).filter(status=1).exists():
+                prev_wp = WorkPlace.objects.filter(worker=wp.worker).get(status=1)
+                prev_wp.status = 3
+                prev_wp.save()
+                    
+            wp.status = 1
+
+            if WorkPlace.objects.filter(worker=wp.worker).filter(status=0).exists():
+                all_new_wp = WorkPlace.objects.filter(worker=wp.worker
+                                             ).filter(status=0)
+                for new_wp in all_new_wp:
+                    new_wp.status = 2
+                    new_wp.save()
+
+        elif 'cancel_btn' in form.data:
+            wp.status = 2
+
+        wp.save()
+        return redirect('work:worker_detail', pk=wp.worker.id)

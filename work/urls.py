@@ -41,7 +41,7 @@ urlpatterns = [
     ),
     path(
         'workplace/<int:pk>/',
-        views.ChangeWorkplaceStatus.as_view(),
+        views.update_wp,
         name='update_wp'
     ),
 ]

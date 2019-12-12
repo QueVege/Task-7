@@ -6,7 +6,8 @@
         <ul>
         {% for wp in workplaces %}
             <div class='work'>
-                <li>{{ wp.work.name }} at {{ wp.work.company.name }} (status: {{ wp.status }})
+            {% if wp.status != 2 %}
+                <li>{{ wp.work.name }} at {{ wp.work.company.name }} ({{ wp.get_status_display }})
                     {% if not wp.status %}
                         <form action="{% url 'work:update_wp' wp.id %}" method="post">
                             {% csrf_token %}
@@ -20,14 +21,19 @@
                     {% endfor %}
                     </ul>
                 </li>
+            {% endif %}
             </div>
         {% endfor %}
         </ul>
-        <form method="post" class='adding_form'>
-            {% csrf_token %}
-            {{ form.as_p }}
-            <input type="submit" value="Add" />
-        </form>
+        {% for wp in workplaces %}
+            {% if wp.status == 1 %}  
+                <form method="post" class='adding_form'>
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <input type="submit" value="Add" />
+                </form>
+            {% endif %}
+        {% endfor %}
     {% else %}
         <p class='work'>Not working now.</p>
     {% endif %}

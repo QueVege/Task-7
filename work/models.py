@@ -12,6 +12,7 @@ class Company(models.Model):
 class Manager(models.Model):
     company = models.ForeignKey(
         Company, related_name='managers', on_delete=models.CASCADE)
+
     first_name = models.CharField(max_length=20)
     last_name = models.CharField(max_length=20)
 
@@ -22,6 +23,7 @@ class Manager(models.Model):
 class Work(models.Model):
     company = models.ForeignKey(
         Company, related_name='works', on_delete=models.CASCADE)
+
     name = models.CharField(max_length=50)
     created_date = models.DateTimeField(default=timezone.now)
 
@@ -41,11 +43,6 @@ class Worker(models.Model):
 
 
 class WorkPlace(models.Model):
-    work = models.ForeignKey(
-        Work, related_name='workplaces', on_delete=models.CASCADE)
-
-    worker = models.ForeignKey(
-        Worker, related_name='workplaces', on_delete=models.CASCADE)
 
     NEW = 0
     APPROVED = 1
@@ -61,15 +58,23 @@ class WorkPlace(models.Model):
 
     status = models.IntegerField(choices=STATUS_CHOICES, default=NEW)
 
+    work = models.ForeignKey(
+        Work, related_name='workplaces', on_delete=models.CASCADE)
+
+    worker = models.ForeignKey(
+        Worker, related_name='workplaces', on_delete=models.CASCADE)
+
     def __str__(self):
         return (
             f'workplace {self.work.name} at {self.work.company.name} company')
 
     class Meta:
         unique_together = ['work', 'worker']
+        ordering = ['status']
 
 
 class WorkTime(models.Model):
+
     NEW = 0
     APPROVED = 1
     CANCELLED = 2
@@ -79,6 +84,7 @@ class WorkTime(models.Model):
 
     worker = models.ForeignKey(
         Worker, on_delete=models.CASCADE)
+
     workplace = models.ForeignKey(
         WorkPlace, related_name='worktimes', on_delete=models.CASCADE)
 
@@ -88,3 +94,8 @@ class WorkTime(models.Model):
         (CANCELLED, 'Cancelled'),
     )
     status = models.IntegerField(choices=STATUS_CHOICES, default=NEW)
+
+
+# class Project(models.Model):
+#     initiator = models.ForeignKey(
+#         Manager, related_name='projects', on_delete=models.CASCADE)
