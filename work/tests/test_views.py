@@ -79,7 +79,6 @@ class TestWorkerPage(TestCase):
         self.assertTrue(response.context["worker"])
         self.assertTrue(response.context["workplaces"])
         self.assertTrue(response.context["form"])
-        
 
     def test_create_wt_form(self):
         wt_obj = WorkTime.objects.create(
@@ -91,6 +90,17 @@ class TestWorkerPage(TestCase):
         data = {'date_start': wt_obj.date_start, 'date_end': wt_obj.date_end}
         form = CreateWorkTime(data=data)
         self.assertTrue(form.is_valid())
+
+    def test_post_wt(self):
+        # data = {
+        #     'date_start': self.date_first,
+        #     'date_end': self.date_second,
+        #     'worker': self.worker_obj.id,
+        #     'workplace': self.wp_obj.id
+        # }
+        # self.client.post(reverse("work:worker_detail", kwargs={'pk': self.worker_obj.id}), data=data)
+        # self.assertEqual(WorkTime.objects.last().workplace.work.name, "Python Developer")
+        # self.assertEqual(WorkTime.objects.last().worker.first_name, "First")
 
 
 class TestHirePage(TestCase):
@@ -110,12 +120,13 @@ class TestHirePage(TestCase):
             last_name="Worker"
         )
 
-    # def test_hire_page(self):
-        
-    #     response= self.client.post(reverse("work:hire"), data=data)
-    #     self.assertRedirects(response, reverse("work:worker_detail", kwargs={'pk': self.worker_obj.id}), 200)
-    #     ***** Error: TemplateResponse hasn't URL *****
+    def test_hire_page(self):
+        data = {'work': self.work_obj.id, 'worker': self.worker_obj.id}
 
-    #     self.client.post('/hire/', data=data)
-    #     self.assertEqual(WorkPlace.objects.last().work.name, "Python Developer")
-    #     self.assertEqual(WorkPlace.objects.last().worker.first_name, "First")
+        self.client.post(reverse("work:hire"), data=data)
+        self.assertEqual(WorkPlace.objects.last().work.name, "Python Developer")
+        self.assertEqual(WorkPlace.objects.last().worker.first_name, "First")
+
+#     response= self.client.post(reverse("work:hire"), data=data)
+#     self.assertRedirects(response, reverse("work:worker_detail", kwargs={'pk': self.worker_obj.id}), 200)
+#     ***** Error: TemplateResponse hasn't URL *****
