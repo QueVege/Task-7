@@ -68,6 +68,7 @@ class TestWorkerPage(TestCase):
         self.wp_obj = WorkPlace.objects.create(
             work=self.work_obj,
             worker=self.worker_obj,
+            status=1
         )
 
     def test_workers_page(self):
@@ -95,8 +96,8 @@ class TestWorkerPage(TestCase):
     #     data = {
     #         'date_start': self.date_first,
     #         'date_end': self.date_second,
-    #         'worker': self.worker_obj.id,
-    #         'workplace': self.wp_obj.id
+    #         # 'worker': self.worker_obj.id,
+    #         # 'workplace': self.wp_obj.id
     #     }
     #     self.client.post(reverse("work:worker_detail", kwargs={'pk': self.worker_obj.id}), data=data)
     #     self.assertEqual(WorkTime.objects.last().workplace.work.name, "Python Developer")

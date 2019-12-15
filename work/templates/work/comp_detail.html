@@ -7,13 +7,17 @@
     {% for work in works %}
         <div class='work'>
             <li>{{ work.name }}
-                <ul class='position'>
-                {% for wp in work.workplaces.all %}
-                    {% if not wp.status %}
-                        <li>{{ wp.worker.first_name }} {{ wp.worker.last_name }}</li>
-                    {% endif %}
-                {% endfor %}
-                </ul>
+                {% if work in no_approved_wp %}
+                    <p class='position'>No approved workplaces.</p>
+                {% else %}
+                    <ul class='position'>
+                    {% for wp in work.workplaces.all %}
+                        {% if wp.status == 1 %}
+                            <li>{{ wp.worker.first_name }} {{ wp.worker.last_name }}</li>
+                        {% endif %}
+                    {% endfor %}
+                    </ul>
+                {% endif %}
             </li>
         </div>
     {% endfor %}

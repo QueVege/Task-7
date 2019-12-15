@@ -33,6 +33,8 @@ class CompDetail(DetailView):
         context = super().get_context_data(**kwargs)
 
         context['works'] = self.get_object().works.all()
+        context['no_approved_wp'] = self.get_object().works.exclude(
+                                                    workplaces__status=1)
         return context
 
 
@@ -52,6 +54,13 @@ class WorkerList(ListView):
     template_name = 'work/worker_list.html'
     context_object_name = 'workers'
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context['no_approved_wp'] = Worker.objects.exclude(
+                                                workplaces__status=1)
+        return context
+
 
 class WorkerDisplay(DetailView):
     model = Worker
@@ -60,6 +69,8 @@ class WorkerDisplay(DetailView):
         context = super().get_context_data(**kwargs)
         context['workplaces'] = self.get_object().workplaces.all()
         context['form'] = CreateWorkTime()
+        if 1 in self.get_object().workplaces.values_list('status', flat=True):
+            context['working_now'] = True
         return context
 
 
@@ -83,6 +94,7 @@ class WorkerWT(SingleObjectMixin, FormView):
         return render(request, 'work/worker_detail.html', {
                 'worker': Worker.objects.get(pk=kwargs['pk']),
                 'workplaces': Worker.objects.get(pk=kwargs['pk']).workplaces.all(),
+                'working_now': True,
                 'form': form
             })
         

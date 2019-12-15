@@ -25,15 +25,13 @@
             </div>
         {% endfor %}
         </ul>
-        {% for wp in workplaces %}
-            {% if wp.status == 1 %}  
-                <form method="post" class='adding_form'>
-                    {% csrf_token %}
-                    {{ form.as_p }}
-                    <input type="submit" value="Add" />
-                </form>
-            {% endif %}
-        {% endfor %}
+    {% endif %}
+    {% if working_now %}
+        <form method="post" class='adding_form'>
+            {% csrf_token %}
+            {{ form.as_p }}
+            <input type="submit" value="Add" />
+        </form>
     {% else %}
         <p class='work'>Not working now.</p>
     {% endif %}
