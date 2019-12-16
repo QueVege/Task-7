@@ -22,7 +22,7 @@ class TestCompaniePage(TestCase):
   
     def test_companies_page(self):
         response = self.client.get(reverse("work:comp_list"))
-        self.assertTrue(response.context["companies"])
+        self.assertIsNotNone(response.context["companies"])
 
     def test_company_detail_page(self):
         self.work_obj = Work.objects.create(
@@ -30,8 +30,8 @@ class TestCompaniePage(TestCase):
             name="Python Developer",
         )
         response = self.client.get(reverse("work:comp_detail", kwargs={'pk': self.company_obj.id}))
-        self.assertTrue(response.context["company"])
-        self.assertTrue(response.context["works"])
+        self.assertIsNotNone(response.context["company"])
+        self.assertIsNotNone(response.context["works"])
 
 
 class TestManagerPage(TestCase):
@@ -47,7 +47,7 @@ class TestManagerPage(TestCase):
 
     def test_managers_page(self):
         response = self.client.get(reverse("work:manag_list", kwargs={'pk': self.company_obj.id}))
-        self.assertTrue(response.context["managers"])
+        self.assertIsNotNone(response.context["managers"])
 
 
 class TestWorkerPage(TestCase):
@@ -73,13 +73,13 @@ class TestWorkerPage(TestCase):
 
     def test_workers_page(self):
         response = self.client.get(reverse("work:worker_list"))
-        self.assertTrue(response.context["workers"])
+        self.assertIsNotNone(response.context["workers"])
 
     def test_worker_detail_page_get(self):
         response = self.client.get(reverse("work:worker_detail", kwargs={'pk': self.worker_obj.id}))
-        self.assertTrue(response.context["worker"])
-        self.assertTrue(response.context["workplaces"])
-        self.assertTrue(response.context["form"])
+        self.assertIsNotNone(response.context["worker"])
+        self.assertIsNotNone(response.context["workplaces"])
+        self.assertIsNotNone(response.context["form"])
 
     def test_create_wt_form(self):
         wt_obj = WorkTime.objects.create(
@@ -127,7 +127,3 @@ class TestHirePage(TestCase):
         self.client.post(reverse("work:hire"), data=data)
         self.assertEqual(WorkPlace.objects.last().work.name, "Python Developer")
         self.assertEqual(WorkPlace.objects.last().worker.first_name, "First")
-
-#     response= self.client.post(reverse("work:hire"), data=data)
-#     self.assertRedirects(response, reverse("work:worker_detail", kwargs={'pk': self.worker_obj.id}), 200)
-#     ***** Error: TemplateResponse hasn't URL *****
