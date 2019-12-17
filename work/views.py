@@ -1,8 +1,4 @@
-from django.contrib.auth.decorators import login_required
-from django.utils.decorators import method_decorator
-from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404
-
 from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.utils import timezone
@@ -13,6 +9,11 @@ from .forms import (
 from django.views.generic import (
     View, ListView, DetailView, CreateView, FormView, UpdateView)
 from django.views.generic.detail import SingleObjectMixin
+from django.contrib.auth.mixins import (
+    PermissionRequiredMixin, LoginRequiredMixin
+)
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
 import logging
 
 logger = logging.getLogger('my_log')
@@ -99,7 +100,7 @@ class WorkerWT(SingleObjectMixin, FormView):
             })
         
 
-class WorkerDetail(View):
+class WorkerDetail(LoginRequiredMixin, View):
 
     def get(self, request, *args, **kwargs):
         view = WorkerDisplay.as_view()
@@ -111,7 +112,10 @@ class WorkerDetail(View):
 
 
 @method_decorator(login_required, name='dispatch')
-class CreateWork(CreateView):
+class CreateWork(PermissionRequiredMixin, CreateView):
+    permission_required = 'work.can_create_work'
+    raise_exception = True
+
     model = Work
     fields = ['company', 'name']
     template_name = 'work/create_work.html'
@@ -119,7 +123,10 @@ class CreateWork(CreateView):
 
 
 @method_decorator(login_required, name='dispatch')
-class Hire(CreateView):
+class Hire(PermissionRequiredMixin, CreateView):
+    permission_required = 'work.can_hire'
+    raise_exception = True
+
     model = WorkPlace
     fields = ['work', 'worker']
     template_name = 'work/hire.html'

@@ -101,8 +101,7 @@ class TestWorkerPage(TestCase):
             'date_start': self.date_first,
             'date_end': self.date_second,
         }
-        # response = self.client.post(reverse("work:worker_detail", kwargs={'pk': self.worker_obj.id}))
-        self.client.post(WorkerWT.as_view(), kwargs={'pk': self.worker_obj.id}, data=data)
+        self.client.post(reverse("work:worker_wt", kwargs={'pk': self.worker_obj.id}), data=data)
         self.assertEqual(WorkTime.objects.last().workplace.work.name, "Python Developer")
         self.assertEqual(WorkTime.objects.last().worker.first_name, "First")
 

@@ -32,6 +32,9 @@ class Work(models.Model):
 
     class Meta:
         unique_together = ['company', 'name']
+        permissions = (
+            ('can_create_work', 'Can create new work'),
+        )
 
 
 class Worker(models.Model):
@@ -71,6 +74,9 @@ class WorkPlace(models.Model):
     class Meta:
         unique_together = ['work', 'worker']
         ordering = ['status']
+        permissions = (
+            ('can_hire', 'Can hire workers'),
+        )
 
 
 class WorkTime(models.Model):
@@ -94,8 +100,3 @@ class WorkTime(models.Model):
         (CANCELLED, 'Cancelled'),
     )
     status = models.IntegerField(choices=STATUS_CHOICES, default=NEW)
-
-
-# class Project(models.Model):
-#     initiator = models.ForeignKey(
-#         Manager, related_name='projects', on_delete=models.CASCADE)

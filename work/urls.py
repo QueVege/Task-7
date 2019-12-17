@@ -30,6 +30,11 @@ urlpatterns = [
         name='worker_detail'
     ),
     path(
+        'workers/<int:pk>/',
+        views.WorkerWT.as_view(),
+        name='worker_wt'
+    ),
+    path(
         'create_work/',
         views.CreateWork.as_view(),
         name='create_work'

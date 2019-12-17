@@ -32,7 +32,6 @@ class UserLogin(FormView):
     
     def get_success_url(self):
         next_url = self.request.GET.get('next', None)
-        print(next_url)
         if next_url:
             return f'{next_url}'
         else:
