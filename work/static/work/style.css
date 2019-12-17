@@ -51,7 +51,7 @@ body {
   font: 300 16px/22px "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
-.company {
+.log, .company {
   color: #148880;
   font-size: 20px;
   line-height: 44px;
@@ -86,7 +86,6 @@ body {
 .container {
   background: #fff;
 }
-
 
 /**** Positioning ****/
 
@@ -140,4 +139,9 @@ html, body {
 
 .status:hover {
   cursor: pointer;
+}
+
+.log {
+  float: left;
+  margin-top: -10px;
 }

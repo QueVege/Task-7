@@ -91,16 +91,20 @@ class TestWorkerPage(TestCase):
         form = CreateWorkTime(data=data)
         self.assertTrue(form.is_valid())
 
-    # def test_post_wt(self):
-    #     data = {
-    #         'date_start': self.date_first,
-    #         'date_end': self.date_second,
-    #         # 'worker': self.worker_obj.id,
-    #         # 'workplace': self.wp_obj.id
-    #     }
-    #     self.client.post(reverse("work:worker_detail", kwargs={'pk': self.worker_obj.id}), data=data)
-    #     self.assertEqual(WorkTime.objects.last().workplace.work.name, "Python Developer")
-    #     self.assertEqual(WorkTime.objects.last().worker.first_name, "First")
+    def test_post_worker_detail(self):
+        response = self.client.post(reverse("work:worker_detail", kwargs={'pk': self.worker_obj.id}))
+        self.assertEqual(response.status_code, 200)
+        self.assertTemplateUsed(response, 'work/worker_detail.html')
+
+    def test_post_worktime(self):
+        data = {
+            'date_start': self.date_first,
+            'date_end': self.date_second,
+        }
+        # response = self.client.post(reverse("work:worker_detail", kwargs={'pk': self.worker_obj.id}))
+        self.client.post(WorkerWT.as_view(), kwargs={'pk': self.worker_obj.id}, data=data)
+        self.assertEqual(WorkTime.objects.last().workplace.work.name, "Python Developer")
+        self.assertEqual(WorkTime.objects.last().worker.first_name, "First")
 
 
 class TestHirePage(TestCase):
