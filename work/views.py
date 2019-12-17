@@ -91,7 +91,7 @@ class WorkerWT(SingleObjectMixin, FormView):
             return redirect('work:worker_detail', kwargs['pk'])
 
         logger.info('Form is invalid') # pragma: no cover
-        return render(request, 'work/worker_detail.html', {
+        return render(request, self.template_name, {
                 'worker': Worker.objects.get(pk=kwargs['pk']),
                 'workplaces': Worker.objects.get(pk=kwargs['pk']).workplaces.all(),
                 'working_now': True,
