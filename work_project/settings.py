@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # 'django_celery_beat',
     'work',
     'coverage',
     'accounts',
@@ -159,8 +160,24 @@ LOGGING = {
    },
 }
 
+# Celery
+
 CELERY_BROKER_URL = 'redis://localhost:6379'
 CELERY_RESULT_BACKEND = 'redis://localhost:6379'
+
 CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TASK_SERIALIZER = 'json'
+
+# CELERY_BEAT_SCHEDULE = {
+#    'inactivate': {
+#        'task': 'users.tasks.inactivate_user',
+#        'schedule': crontab('0', '0', day_of_month='1')
+#    },
+# }
+
+CELERY_ROUTES = {
+   "users.tasks.create_workers": {"queue": "create_workers"}
+}
+
+
