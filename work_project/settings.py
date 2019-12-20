@@ -170,14 +170,14 @@ CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TASK_SERIALIZER = 'json'
 
 # CELERY_BEAT_SCHEDULE = {
-#    'inactivate': {
-#        'task': 'users.tasks.inactivate_user',
+#    'create': {
+#        'task': 'work.tasks.create_workers',
 #        'schedule': crontab('0', '0', day_of_month='1')
 #    },
 # }
 
-CELERY_ROUTES = {
-   "users.tasks.create_workers": {"queue": "create_workers"}
-}
+# CELERY_ROUTES = {
+#    "work.tasks.create_workers": {"queue": "create_workers"}
+# }
 
 

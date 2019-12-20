@@ -22,11 +22,9 @@ def create_workers(url):
     for user in users_data:
         name = user['name'].split(' ')
         first_n = name[0]
-        last_n = ' '.join(name[1::]
+        last_n = ' '.join(name[1::])
 
-        if not Worker.objects.filter(
-            first_name=first_n).filter(last_name=last_n).exists():
-    
+        if not Worker.objects.filter(first_name=first_n).filter(last_name=last_n).exists():
             Worker.objects.create(
                 first_name=first_n,
                 last_name=last_n
