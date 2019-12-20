@@ -1,3 +1,4 @@
+{% load i18n %}
 {% load static %}
 
 <html>
@@ -9,15 +10,15 @@
         <div class='container'>
             <header>
                 {% if user.is_authenticated %}
-                    <div class='log'><a href="{% url 'accounts:logout' %}">LogOut</a></div>
+                    <div class='log'><a href="{% url 'accounts:logout' %}">{% trans "LogOut" %}</a></div>
                 {% else %}
-                    <div class='log'><a href="{% url 'accounts:login' %}">LogIn</a></div>
+                    <div class='log'><a href="{% url 'accounts:login' %}">{% trans "LogIn" %}</a></div>
                 {% endif %}
                 <nav class='menu'>
-                    <a href="{% url 'work:comp_list' %}">Companies</a>
-                    <a href="{% url 'work:worker_list' %}">Workers</a>
-                    <a href="{% url 'work:create_work' %}">New</a>
-                    <a href="{% url 'work:hire' %}">Hire</a>
+                    <a href="{% url 'work:comp_list' %}">{% trans "Companies" %}</a>
+                    <a href="{% url 'work:worker_list' %}">{% trans "Workers" %}</a>
+                    <a href="{% url 'work:create_work' %}">{% trans "New" %}</a>
+                    <a href="{% url 'work:hire' %}">{% trans "Hire" %}</a>
                 </nav>
             </header>
             <hr><br>

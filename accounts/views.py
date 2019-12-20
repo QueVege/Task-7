@@ -3,7 +3,9 @@ from django.contrib.auth import (
     login, logout)
 from django.shortcuts import render, redirect
 from django.urls import reverse
-from django.http import HttpResponse, HttpResponseRedirect
+
+from django.utils.translation import ugettext as _
+
 from django.views.generic import (
     View, ListView, DetailView, CreateView, FormView, UpdateView)
 from .forms import AuthForm
@@ -24,9 +26,9 @@ class UserLogin(FormView):
                     login(request, user)
                     return redirect(self.get_success_url())
                 else:
-                    form.add_error('username', 'User is not active anymore.')
+                    form.add_error('username', _('User is not active anymore.'))
             else:
-                form.add_error('username', 'Wrong username or password.')
+                form.add_error('username', _('Wrong username or password.'))
 
         return render(request, self.template_name, {'form': form})
     

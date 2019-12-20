@@ -96,15 +96,6 @@ class TestWorkerPage(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'work/worker_detail.html')
 
-    def test_post_worktime(self):
-        data = {
-            'date_start': self.date_first,
-            'date_end': self.date_second,
-        }
-        self.client.post(reverse("work:worker_wt", kwargs={'pk': self.worker_obj.id}), data=data)
-        self.assertEqual(WorkTime.objects.last().workplace.work.name, "Python Developer")
-        self.assertEqual(WorkTime.objects.last().worker.first_name, "First")
-
 
 class TestHirePage(TestCase):
     def setUp(self):
