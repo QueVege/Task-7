@@ -1,4 +1,4 @@
-from work_project.celery import app
+from work_project.celery_app import app
 from celery.utils.log import get_task_logger
 
 from work.models import Worker
@@ -8,7 +8,7 @@ import json
 
 logger = get_task_logger(__name__)
 
-@app.task(name='work.tasks.create_workers')
+@app.task(name='create_workers', queue='create_workers')
 def create_workers(url):
     connect_timeout, read_timeout = 5.0, 30.0
     response = requests.get(
