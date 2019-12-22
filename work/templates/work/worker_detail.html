@@ -17,7 +17,10 @@
                     {% endif %}
                     <ul>
                     {% for wt in wp.worktimes.all %}
-                        <li class='position'>From {{ wt.date_start|date:"d.m.Y H:i" }} To {{ wt.date_end|date:"d.m.Y H:i" }}</li>
+                        <li class='position'>
+                            <p>Date: {{ wt.date|date:"d.m.Y" }}</p>
+                             {{ wt.time_start|time:"H:i" }} – {{ wt.time_end|time:"H:i" }}
+                        </li>
                     {% endfor %}
                     </ul>
                 </li>
