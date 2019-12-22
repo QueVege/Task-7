@@ -105,3 +105,16 @@ class WorkTime(models.Model):
         (CANCELLED, 'Cancelled'),
     )
     status = models.IntegerField(choices=STATUS_CHOICES, default=NEW)
+
+
+class Statistics(models.Model):
+
+    created_date = models.DateField(auto_now_add=True)
+
+    workplace = models.ForeignKey(
+        WorkPlace, related_name='workplaces', on_delete=models.CASCADE)
+
+    worker = models.ForeignKey(
+        Worker, related_name='workers', on_delete=models.CASCADE)
+
+    total_worked_time = models.FloatField()
