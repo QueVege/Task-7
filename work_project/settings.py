@@ -168,16 +168,3 @@ CELERY_RESULT_BACKEND = 'redis://localhost:6379'
 CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TASK_SERIALIZER = 'json'
-
-# CELERY_BEAT_SCHEDULE = {
-#    'create': {
-#        'task': 'work.tasks.create_workers',
-#        'schedule': crontab('0', '0', day_of_month='1')
-#    },
-# }
-
-# CELERY_ROUTES = {
-#    "work.tasks.create_workers": {"queue": "create_workers"}
-# }
-
-

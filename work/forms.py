@@ -16,10 +16,12 @@ class CreateWorkTime(forms.ModelForm):
         model = WorkTime
         fields = ('date', 'time_start', 'time_end')
 
+
 class ChangeStatusForm(forms.ModelForm):
     class Meta:
         model = WorkPlace
         fields = []
+
 
 class CreateWorkPlace(forms.ModelForm):
     def clean(self):
