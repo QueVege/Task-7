@@ -1,7 +1,6 @@
 from django.shortcuts import get_object_or_404
 from django.shortcuts import render, redirect
 from django.urls import reverse
-from django.utils import timezone
 from .models import (
     Company, Work, Worker, WorkTime, WorkPlace,
     NEW, APPROVED, CANCELLED, FINISHED)
@@ -9,11 +8,10 @@ from .forms import (
         CreateWorkTime, ChangeStatusForm,
         CreateWorkPlace)
 from django.views.generic import (
-    View, ListView, DetailView, CreateView, FormView, UpdateView)
+    View, ListView, DetailView, CreateView, FormView)
 from django.views.generic.detail import SingleObjectMixin
 from django.contrib.auth.mixins import (
-    PermissionRequiredMixin, LoginRequiredMixin
-)
+    PermissionRequiredMixin, LoginRequiredMixin)
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 import logging
@@ -88,7 +86,8 @@ class WorkerDisplay(DetailView):
         context = super().get_context_data(**kwargs)
         context['workplaces'] = self.get_object().workplaces.all()
         context['form'] = CreateWorkTime()
-        if APPROVED in self.get_object().workplaces.values_list('status', flat=True):
+        if APPROVED in self.get_object().workplaces.values_list(
+                                        'status', flat=True):
             context['working_now'] = True
         return context
 
@@ -106,7 +105,8 @@ class WorkerWT(SingleObjectMixin, FormView):
 
         if form.is_valid():
             current_worker = Worker.objects.get(pk=kwargs['pk'])
-            current_workplace = current_worker.workplaces.get(status=APPROVED)
+            current_workplace = current_worker.workplaces.get(
+                                            status=APPROVED)
 
             date_str = form.data.get('date')
             date = datetime.datetime.strptime(date_str, "%m/%d/%Y").date()
@@ -122,15 +122,16 @@ class WorkerWT(SingleObjectMixin, FormView):
                     wt.save()
                     return redirect('work:worker_detail', kwargs['pk'])
 
-        logger.info('Form is invalid') # pragma: no cover
+        logger.info('Form is invalid')  # pragma: no cover
 
         return render(request, self.template_name, {
                 'worker': Worker.objects.get(pk=kwargs['pk']),
-                'workplaces': Worker.objects.get(pk=kwargs['pk']).workplaces.all(),
+                'workplaces': Worker.objects.get(
+                            pk=kwargs['pk']).workplaces.all(),
                 'working_now': True,
                 'form': form
             })
-        
+
 
 class WorkerDetail(LoginRequiredMixin, View):
 
@@ -171,11 +172,12 @@ class Hire(PermissionRequiredMixin, CreateView):
     template_name = 'work/hire.html'
 
     def get_success_url(self, **kwargs):
-        return reverse('work:worker_detail', kwargs={'pk': self.object.worker.id})
+        return reverse(
+            'work:worker_detail', kwargs={'pk': self.object.worker.id})
 
 
 def update_wp(request, pk):
-    
+
     """Implementing a view for changing WorkPlace status"""
 
     wp = get_object_or_404(WorkPlace, pk=pk)
@@ -187,16 +189,19 @@ def update_wp(request, pk):
 
         if 'approve_btn' in form.data:
 
-            if WorkPlace.objects.filter(worker=wp.worker).filter(status=APPROVED).exists():
-                prev_wp = WorkPlace.objects.filter(worker=wp.worker).get(status=APPROVED)
+            if WorkPlace.objects.filter(
+                        worker=wp.worker).filter(status=APPROVED).exists():
+                prev_wp = WorkPlace.objects.filter(
+                        worker=wp.worker).get(status=APPROVED)
                 prev_wp.status = FINISHED
                 prev_wp.save()
-                    
+
             wp.status = APPROVED
 
-            if WorkPlace.objects.filter(worker=wp.worker).filter(status=NEW).exists():
-                all_new_wp = WorkPlace.objects.filter(worker=wp.worker
-                                             ).filter(status=NEW)
+            if WorkPlace.objects.filter(
+                        worker=wp.worker).filter(status=NEW).exists():
+                all_new_wp = WorkPlace.objects.filter(
+                            worker=wp.worker).filter(status=NEW)
                 for new_wp in all_new_wp:
                     new_wp.status = CANCELLED
                     new_wp.save()
