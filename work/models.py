@@ -2,6 +2,12 @@ from django.db import models
 from django.utils import timezone
 
 
+NEW = 0
+APPROVED = 1
+CANCELLED = 2
+FINISHED = 3
+
+
 class Company(models.Model):
     name = models.CharField(max_length=50)
 
@@ -15,6 +21,7 @@ class Manager(models.Model):
 
     first_name = models.CharField(max_length=20)
     last_name = models.CharField(max_length=20)
+    email = models.EmailField(max_length=128)
 
     def __str__(self):
         return f'manager {self.first_name} {self.last_name} at {self.company}'
@@ -47,10 +54,8 @@ class Worker(models.Model):
 
 class WorkPlace(models.Model):
 
-    NEW = 0
-    APPROVED = 1
-    CANCELLED = 2
-    FINISHED = 3
+    manager = models.ForeignKey(
+        Manager, related_name='workplaces', on_delete=models.CASCADE)
 
     STATUS_CHOICES = (
         (NEW, 'New'),
@@ -67,6 +72,8 @@ class WorkPlace(models.Model):
     worker = models.ForeignKey(
         Worker, related_name='workplaces', on_delete=models.CASCADE)
 
+    week_limit = models.IntegerField(default=40)
+
     def __str__(self):
         return (
             f'workplace {self.work.name} at {self.work.company.name} company')
@@ -81,12 +88,10 @@ class WorkPlace(models.Model):
 
 class WorkTime(models.Model):
 
-    NEW = 0
-    APPROVED = 1
-    CANCELLED = 2
+    date = models.DateField()
 
-    date_start = models.DateTimeField()
-    date_end = models.DateTimeField()
+    time_start = models.TimeField()
+    time_end = models.TimeField()
 
     worker = models.ForeignKey(
         Worker, on_delete=models.CASCADE)

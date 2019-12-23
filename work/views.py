@@ -3,9 +3,11 @@ from django.shortcuts import render, redirect
 from django.urls import reverse
 from django.utils import timezone
 from .models import (
-    Company, Work, Worker, WorkTime, WorkPlace)
+    Company, Work, Worker, WorkTime, WorkPlace,
+    NEW, APPROVED, CANCELLED, FINISHED)
 from .forms import (
-        CreateWorkTime, ChangeStatusForm)
+        CreateWorkTime, ChangeStatusForm,
+        CreateWorkPlace)
 from django.views.generic import (
     View, ListView, DetailView, CreateView, FormView, UpdateView)
 from django.views.generic.detail import SingleObjectMixin
@@ -15,18 +17,25 @@ from django.contrib.auth.mixins import (
 from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 import logging
+import datetime
 
 logger = logging.getLogger('my_log')
 logger.setLevel(logging.INFO)
 
 
 class CompList(ListView):
+
+    """Implementing a view to display companies list"""
+
     model = Company
     template_name = 'work/comp_list.html'
     context_object_name = 'companies'
 
 
 class CompDetail(DetailView):
+
+    """Implementing a view to display company detail page"""
+
     model = Company
     template_name = 'work/comp_detail.html'
 
@@ -40,6 +49,9 @@ class CompDetail(DetailView):
 
 
 class ManagList(DetailView):
+
+    """Implementing a view to display manager's list"""
+
     model = Company
     template_name = 'work/manag_list.html'
 
@@ -51,6 +63,9 @@ class ManagList(DetailView):
 
 
 class WorkerList(ListView):
+
+    """Implementing a view to display worker's list"""
+
     model = Worker
     template_name = 'work/worker_list.html'
     context_object_name = 'workers'
@@ -59,23 +74,29 @@ class WorkerList(ListView):
         context = super().get_context_data(**kwargs)
 
         context['no_approved_wp'] = Worker.objects.exclude(
-                                                workplaces__status=1)
+                                    workplaces__status=1)
         return context
 
 
 class WorkerDisplay(DetailView):
+
+    """Implementing a view to display worker's info"""
+
     model = Worker
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['workplaces'] = self.get_object().workplaces.all()
         context['form'] = CreateWorkTime()
-        if 1 in self.get_object().workplaces.values_list('status', flat=True):
+        if APPROVED in self.get_object().workplaces.values_list('status', flat=True):
             context['working_now'] = True
         return context
 
 
 class WorkerWT(SingleObjectMixin, FormView):
+
+    """Implementing a view for creating worktimes"""
+
     template_name = 'work/worker_detail.html'
     form_class = CreateWorkTime
     model = WorkTime
@@ -84,14 +105,25 @@ class WorkerWT(SingleObjectMixin, FormView):
         form = self.form_class(request.POST)
 
         if form.is_valid():
-            wt = form.save(commit=False)
             current_worker = Worker.objects.get(pk=kwargs['pk'])
-            wt.worker = current_worker
-            wt.workplace = current_worker.workplaces.get(status=1)
-            wt.save()
-            return redirect('work:worker_detail', kwargs['pk'])
+            current_workplace = current_worker.workplaces.get(status=APPROVED)
+
+            date_str = form.data.get('date')
+            date = datetime.datetime.strptime(date_str, "%m/%d/%Y").date()
+
+            if current_workplace.worktimes.exists():
+                prev_date = current_workplace.worktimes.latest('id').date
+                if prev_date >= date:
+                    form.add_error('date', 'Incorrect date value.')
+                else:
+                    wt = form.save(commit=False)
+                    wt.worker = current_worker
+                    wt.workplace = current_workplace
+                    wt.save()
+                    return redirect('work:worker_detail', kwargs['pk'])
 
         logger.info('Form is invalid') # pragma: no cover
+
         return render(request, self.template_name, {
                 'worker': Worker.objects.get(pk=kwargs['pk']),
                 'workplaces': Worker.objects.get(pk=kwargs['pk']).workplaces.all(),
@@ -101,6 +133,8 @@ class WorkerWT(SingleObjectMixin, FormView):
         
 
 class WorkerDetail(LoginRequiredMixin, View):
+
+    """Implementing a view for worker's detail page"""
 
     def get(self, request, *args, **kwargs):
         view = WorkerDisplay.as_view()
@@ -113,6 +147,9 @@ class WorkerDetail(LoginRequiredMixin, View):
 
 @method_decorator(login_required, name='dispatch')
 class CreateWork(PermissionRequiredMixin, CreateView):
+
+    """Implementing a view for creating work"""
+
     permission_required = 'work.can_create_work'
     raise_exception = True
 
@@ -124,11 +161,13 @@ class CreateWork(PermissionRequiredMixin, CreateView):
 
 @method_decorator(login_required, name='dispatch')
 class Hire(PermissionRequiredMixin, CreateView):
+
+    """Implementing a view for hiring workers"""
+
     permission_required = 'work.can_hire'
     raise_exception = True
 
-    model = WorkPlace
-    fields = ['work', 'worker']
+    form_class = CreateWorkPlace
     template_name = 'work/hire.html'
 
     def get_success_url(self, **kwargs):
@@ -136,6 +175,9 @@ class Hire(PermissionRequiredMixin, CreateView):
 
 
 def update_wp(request, pk):
+    
+    """Implementing a view for changing WorkPlace status"""
+
     wp = get_object_or_404(WorkPlace, pk=pk)
 
     if request.method == "POST":
@@ -145,22 +187,22 @@ def update_wp(request, pk):
 
         if 'approve_btn' in form.data:
 
-            if WorkPlace.objects.filter(worker=wp.worker).filter(status=1).exists():
-                prev_wp = WorkPlace.objects.filter(worker=wp.worker).get(status=1)
-                prev_wp.status = 3
+            if WorkPlace.objects.filter(worker=wp.worker).filter(status=APPROVED).exists():
+                prev_wp = WorkPlace.objects.filter(worker=wp.worker).get(status=APPROVED)
+                prev_wp.status = FINISHED
                 prev_wp.save()
                     
-            wp.status = 1
+            wp.status = APPROVED
 
-            if WorkPlace.objects.filter(worker=wp.worker).filter(status=0).exists():
+            if WorkPlace.objects.filter(worker=wp.worker).filter(status=NEW).exists():
                 all_new_wp = WorkPlace.objects.filter(worker=wp.worker
-                                             ).filter(status=0)
+                                             ).filter(status=NEW)
                 for new_wp in all_new_wp:
-                    new_wp.status = 2
+                    new_wp.status = CANCELLED
                     new_wp.save()
 
         elif 'cancel_btn' in form.data:
-            wp.status = 2
+            wp.status = CANCELLED
 
         wp.save()
         return redirect('work:worker_detail', pk=wp.worker.id)
