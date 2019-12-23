@@ -105,22 +105,26 @@ class WorkerWT(SingleObjectMixin, FormView):
 
         if form.is_valid():
             current_worker = Worker.objects.get(pk=kwargs['pk'])
-            current_workplace = current_worker.workplaces.get(
-                                            status=APPROVED)
 
             date_str = form.data.get('date')
             date = datetime.datetime.strptime(date_str, "%m/%d/%Y").date()
 
-            if current_workplace.worktimes.exists():
-                prev_date = current_workplace.worktimes.latest('id').date
-                if prev_date >= date:
-                    form.add_error('date', 'Incorrect date value.')
-                else:
-                    wt = form.save(commit=False)
-                    wt.worker = current_worker
-                    wt.workplace = current_workplace
-                    wt.save()
-                    return redirect('work:worker_detail', kwargs['pk'])
+            last_wt = None
+
+            if current_worker.workplaces.exists():
+                last_wp = current_worker.workplaces.latest('id')
+                if last_wp.worktimes.exists():
+                    last_wt = last_wp.worktimes.latest('id')
+
+            if last_wt and last_wt.date >= date:
+                form.add_error('date', 'Incorrect date value.')
+            else:
+                wt = form.save(commit=False)
+                wt.worker = current_worker
+                wt.workplace = current_worker.workplaces.get(
+                                        status=APPROVED)
+                wt.save()
+                return redirect('work:worker_detail', kwargs['pk'])
 
         logger.info('Form is invalid')  # pragma: no cover
 
@@ -136,7 +140,7 @@ class WorkerWT(SingleObjectMixin, FormView):
 class WorkerDetail(LoginRequiredMixin, View):
 
     """Implementing a view for worker's detail page"""
-
+ 
     def get(self, request, *args, **kwargs):
         view = WorkerDisplay.as_view()
         return view(request, *args, **kwargs)

@@ -172,16 +172,15 @@ CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TASK_SERIALIZER = 'json'
 
-# CELERY_BEAT_SCHEDULE = {
-#    'create': {
-#        'task': 'work.tasks.create_workers',
-#        'schedule': crontab('0', '0', day_of_month='1')
-#    },
-# }
+CELERY_BEAT_SCHEDULE = {
+   'create': {
+       'task': 'check_worked_time',
+       'schedule': crontab('0', '0', day_of_month='1')
+   },
+}
 
 
 # Email
-
 
 EMAIL_USE_TLS = True
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
