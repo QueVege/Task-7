@@ -77,8 +77,8 @@ def check_worked_time():
             msg = (
                 f'Worker: {wp.worker.first_name} {wp.worker.last_name}\n'
                 f'WorkPlace: {wp.work.name}\n'
-                f'Week limit: {wp.week_limit}\n'
-                f'Total worked time: {total_time}'
+                f'Week limit: {wp.week_limit} hours\n'
+                f'Total worked time: {int(total_time)} hours {int((total_time-int(total_time))*60)} minutes'
             )
             app.send_task('mail_to_manager', args=[subj, msg, email])
             

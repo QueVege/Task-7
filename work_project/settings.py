@@ -14,6 +14,7 @@ import os
 import logging
 import sentry_sdk
 from sentry_sdk.integrations.logging import LoggingIntegration
+from celery.schedules import crontab
 
 
 sentry_logging = LoggingIntegration(
@@ -172,12 +173,12 @@ CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TASK_SERIALIZER = 'json'
 
-# CELERY_BEAT_SCHEDULE = {
-#    'create': {
-#        'task': 'check_worked_time',
-#        'schedule': crontab('0', '0', day_of_month='1')
-#    },
-# }
+CELERY_BEAT_SCHEDULE = {
+   'week_checking': {
+       'task': 'check_worked_time',
+       'schedule': crontab(minute=22, hour=19, day_of_week='monday')
+   },
+}
 
 
 # Email
