@@ -80,9 +80,8 @@ def check_worked_time():
                 f'Week limit: {wp.week_limit}\n'
                 f'Total worked time: {total_time}'
             )
-            task = mail_to_manager.delay(subj, msg, email)
-            task.get(timeout=10)
-
+            app.send_task('mail_to_manager', args=[subj, msg, email])
+            
     return True
 
 

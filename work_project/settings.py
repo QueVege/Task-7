@@ -172,12 +172,12 @@ CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TASK_SERIALIZER = 'json'
 
-CELERY_BEAT_SCHEDULE = {
-   'create': {
-       'task': 'check_worked_time',
-       'schedule': crontab('0', '0', day_of_month='1')
-   },
-}
+# CELERY_BEAT_SCHEDULE = {
+#    'create': {
+#        'task': 'check_worked_time',
+#        'schedule': crontab('0', '0', day_of_month='1')
+#    },
+# }
 
 
 # Email
